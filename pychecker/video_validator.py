@@ -11,7 +11,7 @@ import re
 import logging
 
 
-class RTSPClientOCR(object):
+class Video_validator(object):
     def __init__(self, url, data_dir='./data/video_validator', frames=10):
         self._url = url
         self._frames = frames
@@ -87,7 +87,8 @@ class RTSPClientOCR(object):
                 stderr=subprocess.PIPE)
             #ret = proc.wait()
             while proc.poll() == None:
-                print proc.stdout.readline()
+                pass
+                # print proc.stdout.readline()
 
             if not (proc.returncode == 0):
                 logging.error("ocr failed at No.%d frame!" % i)
