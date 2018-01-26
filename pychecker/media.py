@@ -1,5 +1,6 @@
 from video_validator import Video_validator
 from audio_validator import Audio_validator
+
 # import os
 # import platform
 # import argparse
@@ -51,8 +52,8 @@ from audio_validator import Audio_validator
 #     audio = Audio_validator(args.audio)
 #     audio_rc = audio.check(args.freq, args.band_width, args.energy)
 #     print audio_rc
-def video_check(url):
-    video = Video_validator(url)
+def video_check(data_dir='./data/video_validator', frames=10):
+    video = Video_validator(data_dir, frames)
     video_rc = video.check()
     # print video_rc
     return video_rc
@@ -63,5 +64,6 @@ def audio_check(file, freq=5000, band_width=1000, energy=0.9):
     audio_rc = audio.check(freq, band_width, energy)
     # print audio_rc
     return audio_rc
+
 
 __all__ = ['video_check', 'audio_check']

@@ -12,63 +12,14 @@ import logging
 
 
 class Video_validator(object):
-    def __init__(self, url, data_dir='./data/video_validator', frames=10):
-        self._url = url
+    def __init__(self, data_dir='./data/video_validator', frames=10):
         self._frames = frames
         self._dir = os.path.abspath(data_dir)
 
         if platform.system() == 'Windows':
             self._dir = os.path.normpath(self._dir).replace('\\', '/')
 
-    def capture(self):
-        #clear data first
-        if os.path.isdir(self._dir):
-            shutil.rmtree(self._dir)
-        os.makedirs(self._dir)
-        gst_launch = 'gst-launch-1.0'
-        if platform.system() == 'Windows':
-            gst_launch += '.exe'
-
-        proc = subprocess.Popen(
-            [
-                gst_launch,  #'-v' ,'-m',
-                'rtspsrc',
-                'location=%s' % self._url,
-                '!',
-                'rtph264depay',
-                '!',
-                'h264parse',
-                '!',
-                'capsfilter',
-                'caps="video/x-h264,width=320,height=240,framerate=(fraction)10/1"',
-                '!',
-                'avdec_h264',
-                '!',
-                'jpegenc',
-                '!',
-                'multifilesink',
-                'location={0}/%05d.jpg'.format(self._dir)
-            ],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE)
-
-        timeout = (2 + self._frames * 0.1) * 1000000
-        base = datetime.datetime.now()
-
-        filename = os.path.join(self._dir, '%05d.jpg' % (self._frames - 1))
-        while True:
-            passed = datetime.datetime.now() - base
-            ms = passed.seconds * 1000 + passed.microseconds
-            if ms > timeout:
-                logging.error('%s Timeout')
-                proc.kill()
-                return False
-            if os.path.isfile(filename):
-                proc.kill()
-                return True
-        proc.kill()
-
-    def recognize(self):
+    def check(self):
 
         config = os.path.join(self._dir, 'tesseract.config')
         f = open(config, 'w')
@@ -117,6 +68,3 @@ class Video_validator(object):
                 return False
 
         return True
-
-    def check(self):
-        return self.capture() and self.recognize()
