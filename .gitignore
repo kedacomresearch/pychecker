@@ -1,0 +1,8 @@
+*pyc
+*wav
+*data
+
+*build
+*dist
+*record.txt
+*egg-info
